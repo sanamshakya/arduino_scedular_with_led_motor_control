@@ -373,7 +373,7 @@ void loop() {
     digitalWrite(10,LOW);
      i = 0;
      while(i<nLEDs)
- {
+    {
    strip.setPixelColor(i,0,0,0);
    i++;
     }
@@ -412,6 +412,8 @@ void loop() {
  }   
    
 }
+
+/////////////end of big loop//////////////////////////////////////////
 
 void task1_ledon(){
   int i = 0;  
@@ -563,3 +565,8 @@ void readTime() {
   year = bcdToDec(Wire.read());
 }
 
+int totalTime(hour1, min1)
+{
+  int total_time = hour1*60 + min1;
+  
+}
