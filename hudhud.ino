@@ -63,6 +63,14 @@ byte task3HourS_Stored, task3MinS_Stored, task3SecS_Stored, task3HourE_Stored, t
 byte task1Flag = 0;
 byte task2Flag = 0;
 
+unsigned long totalTime_task1_start = 0;
+unsigned long totalTime_task1_stop = 0;
+
+unsigned long totalTime_task2_start = 0;
+unsigned long totalTime_task2_stop = 0;
+
+unsigned long totalTime_now = 0;
+
 
 void setup() {
   Wire.begin();
@@ -86,9 +94,10 @@ void setup() {
   
   digitalWrite(12, HIGH);
   digitalWrite(11, LOW);
+  delay(1000);
   setting_time = digitalRead(11); 
   
- 
+  delay(1000);
   
   if (setting_time==HIGH){
   
@@ -269,6 +278,14 @@ void setup() {
   task3MinE_Stored=EEPROM.read(address); address = address +1;
   task3SecE_Stored=EEPROM.read(address); address = address +1;
   
+  totalTime_task1_start =totalTime(task1HourS_Stored, task1MinS_Stored, task1SecS_Stored);
+  totalTime_task1_stop = totalTime(task1HourE_Stored, task1MinE_Stored, task1SecE_Stored);
+  
+  totalTime_task2_start = totalTime(task2HourS_Stored, task2MinS_Stored, task2SecS_Stored);
+  totalTime_task2_stop = totalTime(task2HourE_Stored, task2MinE_Stored,task2SecE_Stored);
+  
+  
+  
   Serial.print("*********************************\n");
   Serial.print("Current time: ");
   printTime();
@@ -280,23 +297,34 @@ void setup() {
                           Serial.print("Stops at ");Serial.print(task2HourE_Stored);Serial.print("hours"); Serial.print(task2MinE_Stored);Serial.print("Minutes\n");
   Serial.print("Task3:"); Serial.print("Starts at ");Serial.print(task3HourS_Stored);Serial.print("hours"); Serial.print(task3MinS_Stored);Serial.print("Minutes\t");
                           Serial.print("Stops at ");Serial.print(task3HourE_Stored);Serial.print("hours"); Serial.print(task3MinE_Stored);Serial.print("Minutes\n");
+                  
+  Serial.print(totalTime_task1_start);Serial.print("\t");
+  Serial.print(totalTime_task1_stop);Serial.print("\t");
   
     
 }
 
 int i = 0;
 int j = 0;
+
+
+
 // Continuous function for converting bytes to decimals and vice versa
 void loop() {
   readTime();
+  
+  totalTime_now = totalTime(hour, minute, second);
+  //Serial.print(totalTime_now);Serial.print("\n");
+  
   //task1Flag =0;
  /////////// task 1 code/////////////////////////////////////////
-  if ((hour == task1HourS_Stored) & (minute == task1MinS_Stored) ){
+  if (totalTime_now>totalTime_task1_start && totalTime_now<=totalTime_task1_stop){
     task1Flag = 1;
               
    }   
-   if ((hour == task1HourE_Stored) & (minute == task1MinE_Stored) ){
-    task1Flag = 0;   // set the LED on 
+   else 
+   {
+     task1Flag = 0;
    }
    
    int last_i = 0;
@@ -304,6 +332,8 @@ void loop() {
     digitalWrite(8,HIGH);
     digitalWrite(9,LOW);
     digitalWrite(10,HIGH);
+    
+    digitalWrite(13,HIGH);
     
     if (j<7)
     {
@@ -371,6 +401,7 @@ void loop() {
      digitalWrite(8,HIGH);
     digitalWrite(9,HIGH);
     digitalWrite(10,LOW);
+    digitalWrite(13,LOW);
      i = 0;
      while(i<nLEDs)
     {
@@ -385,12 +416,13 @@ void loop() {
    
    
  ///////////////////task2 code////////////////////////////////////
- if ((hour == task2HourS_Stored) & (minute == task2MinS_Stored) & (second == task2SecS_Stored)){
+ if (totalTime_now>totalTime_task2_start && totalTime_now<=totalTime_task2_stop){
     task2Flag = 1;
               
    }   
-   if ((hour == task2HourE_Stored) & (minute == task2MinE_Stored) & (second == task2SecE_Stored) ){
-    task2Flag = 0;   // set the LED on 
+   else 
+   {
+     task2Flag = 0;
    }
    
    if(task2Flag == 1){
@@ -565,8 +597,9 @@ void readTime() {
   year = bcdToDec(Wire.read());
 }
 
-int totalTime(hour1, min1)
+unsigned long totalTime(byte hour1, byte min1, byte sec1)
 {
-  int total_time = hour1*60 + min1;
+  unsigned long total_time =(unsigned long) (hour1*60*60 + min1*60+sec1);
+  return total_time;
   
 }
