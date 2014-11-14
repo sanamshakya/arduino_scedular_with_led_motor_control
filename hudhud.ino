@@ -143,7 +143,7 @@ void setup() {
     addr = addr+1;
     Serial.println(task1SecS);
     
-    Serial.print("Enter task1 Stop Time\n ");
+    Serial.print("Enter task1 Stop Time or duration\n ");
     Serial.println("**********************");
     Serial.print("Enter Hour: ");    
     task1HourE = readByte();
@@ -180,7 +180,9 @@ void setup() {
     addr = addr+1;
     Serial.println(task2SecS);
     
-    Serial.print("Enter task2 Stop Time\n ");
+    
+    
+    Serial.print("Enter task2 Stop Time or duration\n ");
     Serial.println("**********************");
     Serial.print("Enter Hour: ");    
     task2HourE = readByte();
@@ -199,7 +201,7 @@ void setup() {
     Serial.println(task2SecE);
     
     
-    Serial.print("Enter task3 Start Time \n");
+    Serial.print("Enter task3 Start Time or duration\n");
     Serial.println("**********************");
     Serial.print("Enter Hour: ");    
     task3HourS = readByte();
